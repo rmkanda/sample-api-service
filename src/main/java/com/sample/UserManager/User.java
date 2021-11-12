@@ -3,12 +3,31 @@ package com.sample.UserManager;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 
 @Entity
 public  class User {
     private @Id
     @GeneratedValue
     Long id;
+
+    @NotNull
+    @Pattern(regexp = "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$\n")
+    /**
+     * ^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$
+     *  └─────┬────┘└───┬──┘└─────┬─────┘└─────┬─────┘ └───┬───┘
+     *        │         │         │            │           no _ or . at the end
+     *        │         │         │            │
+     *        │         │         │            allowed characters
+     *        │         │         │
+     *        │         │         no __ or _. or ._ or .. inside
+     *        │         │
+     *        │         no _ or . at the beginning
+     *        │
+     *        username is 8-20 characters long
+     */
     private  String userName;
     private  String firstName;
 
