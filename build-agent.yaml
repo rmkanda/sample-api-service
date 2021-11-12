@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: spring-build-ci
+spec:
+  containers:
+    - name: gradle
+      image: gradle:7-jdk17-alpine
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: gradle
+          mountPath: /home/gradle/.gradle
+    - name: trufflehog
+      image: rmkanda/trufflehog
+      command:
+        - cat
+      tty: true
+    - name: docker-tools
+      image: rmkanda/docker-tools:latest
+      env:
+        - name: GRYPE_DB_CACHE_DIR 
+          value: /tmp/grypecache/
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - mountPath: /var/run
+          name: docker-sock
+        - mountPath: /tmp/grypecache/
+          name: grypecache
+  volumes:
+    - name: gradle
+      hostPath:
+        path: /tmp/.gradle/
+    - name: grypecache
+      hostPath:
+        path: /tmp/.grypecache/
