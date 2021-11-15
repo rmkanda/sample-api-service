@@ -2,22 +2,20 @@ pipeline {
   agent {
     kubernetes {
       yamlFile 'build-agent.yaml'
-      defaultContainer 'maven'
+      defaultContainer 'gradle'
       idleMinutes 1
     }
   }
   environment {
     APP_NAME = "sample-api-service"
-    IMAGE_REGISTRY = "rmkanda"
-
   }
   stages {
     stage('Setup') {
       parallel {
         stage('Install Dependencies') {
           steps {
-            container('maven') {
-              sh './mvnw install -DskipTests -Dspotbugs.skip=true -Ddependency-check.skip=true'
+            container('gradle') {
+              sh './gradlew dependencies'
             }
           }
         }
@@ -25,9 +23,9 @@ pipeline {
           steps {
             container('trufflehog') {
               sh "git clone ${GIT_URL}"
-              sh "cd ${APP_NAME} && ls -al"
-              sh "cd ${APP_NAME} && trufflehog ."
-              sh "rm -rf ${APP_NAME}"
+              sh "cd ${sample-api-service} && ls -al"
+              sh "cd ${sample-api-service} && trufflehog ."
+              sh "rm -rf ${sample-api-service}"
             }
           }
         }
@@ -35,20 +33,17 @@ pipeline {
     }
     stage('Build') {
       steps {
-        container('maven') {
-          sh './mvnw package'
-        }
-        container('docker-tools') {
-          sh "docker build . -t ${APP_NAME}"
+        container('gradle') {
+          sh './gradlew build'
         }
       }
     }
-    stage('Verify') {
+    stage('Static Analysis') {
       parallel {
         stage('Unit Tests') {
           steps {
-            container('maven') {
-              sh './mvnw test'
+            container('gradle') {
+              sh './gradlew test'
             }
           }
         }

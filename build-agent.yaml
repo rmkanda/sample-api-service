@@ -13,6 +13,14 @@ spec:
       volumeMounts:
         - name: gradle
           mountPath: /home/gradle/.gradle
+    - name: maven
+      image: openjdk:17.0.1
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: maven
+          mountPath: /root/.m2/
     - name: trufflehog
       image: rmkanda/trufflehog
       command:
@@ -32,9 +40,15 @@ spec:
         - mountPath: /tmp/grypecache/
           name: grypecache
   volumes:
+    - name: maven
+      hostPath:
+        path: /tmp/.m2/
     - name: gradle
       hostPath:
         path: /tmp/.gradle/
+    - name: docker-sock
+      hostPath:
+        path: /var/run
     - name: grypecache
       hostPath:
         path: /tmp/.grypecache/
