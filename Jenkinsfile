@@ -21,16 +21,6 @@ pipeline {
             }
           }
         }
-        stage('Secrets scanner') {
-          steps {
-            container('trufflehog') {
-              sh "git clone ${GIT_URL}"
-              sh "cd ${APP_NAME} && ls -al"
-              sh "cd ${APP_NAME} && trufflehog ."
-              sh "rm -rf ${APP_NAME}"
-            }
-          }
-        }
       }
     }
     stage('Build') {
