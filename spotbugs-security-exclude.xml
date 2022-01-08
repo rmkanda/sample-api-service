@@ -1,0 +1,6 @@
+<FindBugsFilter>
+<!-- <Match>
+  <Class name="com.sample.UserManager.LoadDatabase" />
+  <Bug pattern="CRLF_INJECTION_LOGS" />
+</Match> -->
+</FindBugsFilter>
