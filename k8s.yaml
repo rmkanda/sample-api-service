@@ -14,18 +14,19 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
+  name: sample-api
   labels:
     app: sample-api
 spec:
   containers:
     - name: sample-api
-      image: sample-api-service:latest
+      image: rmkanda/sample-api-service:latest
       resources:
         requests:
-          memory: "64Mi"
+          memory: "256Mi"
           cpu: "250m"
         limits:
-          memory: "128Mi"
+          memory: "512Mi"
           cpu: "500m"
       securityContext:
         runAsNonRoot: true
